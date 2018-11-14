@@ -130,6 +130,8 @@ function getRetryUrl(src){
         link.rel = 'stylesheet';
         link.href= newSrc;
         link.setAttribute('retry','');
+        link.setAttribute('onerror',"__retryPlugin.call(this,event)");
+        link.setAttribute('onload',"__retryPlugin.call(this,event)");
         this.parentNode.insertBefore(link,this.nextSibling);
       }else if(isAsync){
         // js 重新加载
@@ -183,7 +185,7 @@ function getRetryUrl(src){
     if(isRetry){
       report({
         level: BADJS_LEVEL||2,
-        msg: this.tagName + ' load fail: ' + src,
+        msg: this.tagName + ' retry load success: ' + src,
         ext: {
           msid: isStyle?CSS_RETRY_SUCC_MSID:JS_RETRY_SUCC_MSID,
         },
@@ -206,6 +208,7 @@ function getRetryUrl(src){
 <script>
 var ${varName}={};
 function __retryPlugin(event){
+this.onload=this.onerror = null;
 ${this.genBadJsCode()}
 ${this.genGetRetryUrlCode()}
 ${this.genRetryCode()}
