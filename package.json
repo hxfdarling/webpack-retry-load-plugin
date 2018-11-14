@@ -1,6 +1,6 @@
 {
   "name": "webpack-retry-load-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "auto load retry resource from other domain",
   "main": "src/index.js",
   "scripts": {
