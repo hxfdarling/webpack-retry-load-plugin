@@ -272,10 +272,12 @@ ${this.genRetryCode()}
 
         if (url) {
           const filename = path.basename(url);
-          const script = `\\x3Cscript type="text/javascript" ${attrs
-            .map(i => `${i.name}="${i.value}"`)
-            .join(' ')} retry>\\x3C/script>`;
-          code = `<script>if(!__JS_RETRY__["${filename}"]){document.write('${script}');}</script>`;
+          if (this.matchObject(url)) {
+            const script = `\\x3Cscript type="text/javascript" ${attrs
+              .map(i => `${i.name}="${i.value}"`)
+              .join(' ')} retry>\\x3C/script>`;
+            code = `<script>if(!__JS_RETRY__["${filename}"]){document.write('${script}');}</script>`;
+          }
         } else {
           throw Error('not found url');
         }
@@ -305,16 +307,16 @@ ${this.genRetryCode()}
   apply(compiler) {
     const { options } = this;
     this.publicPath = compiler.options.output.publicPath;
-    const matchObject = ModuleFilenameHelpers.matchObject.bind(undefined, options);
+    this.matchObject = ModuleFilenameHelpers.matchObject.bind(undefined, options);
     compiler.hooks.compilation.tap(pluginName, compilation => {
       this.registerHwpHooks(compilation);
-      compilation.hooks.optimizeChunkAssets.tap('retryPlugin', chunks => {
+      compilation.hooks.optimizeChunkAssets.tap(pluginName, chunks => {
         for (const chunk of chunks) {
           if (options.entryOnly && !chunk.canBeInitial()) {
             continue;
           }
           for (const file of chunk.files) {
-            if (!matchObject(file)) {
+            if (!this.matchObject(file)) {
               continue;
             }
 
