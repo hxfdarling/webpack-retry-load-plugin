@@ -1,0 +1,39 @@
+{
+  "name": "webpack-retry-load-plugin",
+  "version": "1.0.0",
+  "description": "auto load retry resource from other domain",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hxfdarling/webpack-retry-load-plugin.git"
+  },
+  "author": "zman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hxfdarling/webpack-retry-load-plugin/issues"
+  },
+  "homepage": "https://github.com/hxfdarling/webpack-retry-load-plugin#readme",
+  "dependencies": {
+    "fastparse": "^1.1.2"
+  },
+  "devDependencies": {
+    "commitlint-config-imt": "^0.0.4",
+    "eslint-config-zman": "^0.0.9"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "node_modules/commitlint-config-imt/cz-config.js"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
