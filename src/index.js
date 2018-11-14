@@ -96,7 +96,11 @@ function getRetryUrl(src){
     retryPublicPath += '/';
     retryPublicPath = retryPublicPath.replace(/\\/\\/$/, '/');
   }
-  return retryPublicPath + src.replace(hwpPublicPath, '').replace(/^\\//, '');
+  const value = src
+      .replace(/^https?:/, '')
+      .replace(publicPath.replace(/^https?:/, ''), '')
+      .replace(/^\\//, '');
+  return retryPublicPath + value;
 }
 `;
   }
@@ -212,13 +216,17 @@ ${this.genRetryCode()}
 
   getRetryUrl(src) {
     let { retryPublicPath } = this.options;
+    const { publicPath } = this;
 
     if (retryPublicPath) {
       retryPublicPath += '/';
       retryPublicPath = retryPublicPath.replace(/\/\/$/, '/');
     }
 
-    const value = src.replace(this.publicPath, '').replace(/^\//, '');
+    const value = src
+      .replace(/^https?:/, '')
+      .replace(publicPath.replace(/^https?:/, ''), '')
+      .replace(/^\//, '');
     return retryPublicPath + value;
   }
 
