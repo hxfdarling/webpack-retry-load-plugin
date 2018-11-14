@@ -90,7 +90,7 @@ var report = function(data){
     return `
 function getRetryUrl(src){
   var retryPublicPath  = "${this.options.retryPublicPath}";
-  var hwpPublicPath = "${this.publicPath}";
+  var publicPath = "${this.publicPath}";
 
   if(retryPublicPath){
     retryPublicPath += '/';
