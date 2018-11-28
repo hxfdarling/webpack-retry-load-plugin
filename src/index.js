@@ -6,6 +6,7 @@ const path = require('path');
 const attrParse = require('./attributesParser');
 const { SCRIPT, pluginName } = require('./const');
 const MainTemplatePlugin = require('./mainTemplatePlugin');
+const babel = require('./babel');
 
 const varName = '__JS_RETRY__';
 
@@ -38,6 +39,8 @@ class RetryPlugin {
     /** @type {PluginOptions} */
     this.options = Object.assign(
       {
+        minimize: false, // 默认不压缩
+
         JS_SUCC_MSID: '',
         JS_FAIL_MSID: '',
         CSS_SUCC_MSID: '',
@@ -78,7 +81,6 @@ var CSS_RETRY_FAIL_MSID = "${CSS_RETRY_FAIL_MSID}";
 var BADJS_LEVEL = ${this.options.badjsLevel || 2};
 
 var report = function(data){
-  console.log(data);
   setTimeout(function(){
     window.BJ_REPORT&&window.BJ_REPORT.report(data)
   },2000);
@@ -203,18 +205,17 @@ function getRetryUrl(src){
 `;
   }
 
-  genInjectCode() {
-    return `
-<script>
+  async genInjectCode() {
+    let code = `
 var ${varName}={};
 function __retryPlugin(event){
 this.onload=this.onerror = null;
 ${this.genBadJsCode()}
 ${this.genGetRetryUrlCode()}
 ${this.genRetryCode()}
-}
-</script>
-`;
+}`;
+    code = await babel(code, this.options);
+    return `<script>${code}</script>`;
   }
 
   getRetryUrl(src) {
@@ -236,9 +237,12 @@ ${this.genRetryCode()}
   registerHwpHooks(compilation) {
     // HtmlWebpackPlugin >= 4
     const hooks = HtmlWebpackPlugin.getHooks(compilation);
-    hooks.beforeAssetTagGeneration.tapAsync(pluginName, (pluginArgs, callback) => {
-      callback(null, pluginArgs);
-    });
+    hooks.beforeAssetTagGeneration.tapAsync(
+      pluginName,
+      (pluginArgs, callback) => {
+        callback(null, pluginArgs);
+      }
+    );
 
     hooks.alterAssetTags.tap(pluginName, ({ assetTags }) => {
       const code = '__retryPlugin.call(this,event)';
@@ -251,9 +255,9 @@ ${this.genRetryCode()}
         tag.attributes.onload = code;
       });
     });
-    hooks.beforeEmit.tapAsync(pluginName, (pluginArgs, callback) => {
+    hooks.beforeEmit.tapAsync(pluginName, async (pluginArgs, callback) => {
       let { html } = pluginArgs;
-      html = html.replace('<head>', `<head>${this.genInjectCode()}`);
+      html = html.replace('<head>', `<head>${await this.genInjectCode()}`);
       const scripts = attrParse(html).filter(tag => tag.name === SCRIPT);
 
       scripts.reverse();
@@ -307,7 +311,10 @@ ${this.genRetryCode()}
   apply(compiler) {
     const { options } = this;
     this.publicPath = compiler.options.output.publicPath;
-    this.matchObject = ModuleFilenameHelpers.matchObject.bind(undefined, options);
+    this.matchObject = ModuleFilenameHelpers.matchObject.bind(
+      undefined,
+      options
+    );
     compiler.hooks.compilation.tap(pluginName, compilation => {
       this.registerHwpHooks(compilation);
       compilation.hooks.optimizeChunkAssets.tap(pluginName, chunks => {
@@ -343,14 +350,21 @@ ${this.genRetryCode()}
             }
             const code = `var ${varName}=${varName}||{};\n${varName}["${basename}"]=true;`;
 
-            compilation.assets[file] = new ConcatSource(code, '\n', compilation.assets[file]);
+            compilation.assets[file] = new ConcatSource(
+              code,
+              '\n',
+              compilation.assets[file]
+            );
           }
         }
       });
     });
     // eslint-disable-next-line
     compiler.hooks.afterPlugins.tap(pluginName, compiler => {
-      compiler.hooks.thisCompilation.tap(pluginName, this.registerMTP.bind(this, compiler));
+      compiler.hooks.thisCompilation.tap(
+        pluginName,
+        this.registerMTP.bind(this, compiler)
+      );
     });
   }
 }

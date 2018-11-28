@@ -17,11 +17,16 @@
   },
   "homepage": "https://github.com/hxfdarling/webpack-retry-load-plugin#readme",
   "dependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
     "fastparse": "^1.1.2"
   },
   "devDependencies": {
     "commitlint-config-imt": "^0.0.4",
-    "eslint-config-zman": "^0.0.9"
+    "eslint-config-zman": "^0.0.9",
+    "husky": "^1.2.0",
+    "lint-staged": "^8.1.0",
+    "prettier": "^1.15.2"
   },
   "config": {
     "commitizen": {
@@ -33,7 +38,19 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{json,css,scss,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{jsx,js}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
