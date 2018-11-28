@@ -4,6 +4,7 @@
   "description": "auto load retry resource from other domain",
   "main": "src/index.js",
   "scripts": {
+    "release": "standard-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,7 +27,8 @@
     "eslint-config-zman": "^0.0.9",
     "husky": "^1.2.0",
     "lint-staged": "^8.1.0",
-    "prettier": "^1.15.2"
+    "prettier": "^1.15.2",
+    "standard-version": "^4.4.0"
   },
   "config": {
     "commitizen": {
