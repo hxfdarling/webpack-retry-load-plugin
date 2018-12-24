@@ -106,9 +106,9 @@ function getRetryUrl(src){
 
   genRetryCode(jsComplete = '') {
     return `
-  var isRetry = this.getAttribute('retry')!==null;
+  var isRetry = this.hasAttribute('retry');
   // 只有异步的js走这个重试逻辑，同步的都是采用document.write
-  var isAsync = this.getAttribute('isAsync')!==null;
+  var isAsync = this.hasAttribute('isAsync');
   var isStyle = this.tagName==='LINK';
   var isError = event.type==='error'||event.type==='timeout';
   var src = this.href||this.src;
