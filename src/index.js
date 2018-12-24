@@ -71,7 +71,7 @@ class RetryPlugin {
 var JS_SUCC_MSID = "${JS_SUCC_MSID}";
 var JS_FAIL_MSID = "${JS_FAIL_MSID}";
 var CSS_SUCC_MSID = "${CSS_SUCC_MSID}";
-var CSS_FAIL_MSID = "${CSS_FAIL_MSID}"
+var CSS_FAIL_MSID = "${CSS_FAIL_MSID}";
 
 var JS_RETRY_SUCC_MSID = "${JS_RETRY_SUCC_MSID}";
 var JS_RETRY_FAIL_MSID = "${JS_RETRY_FAIL_MSID}";
@@ -82,7 +82,7 @@ var BADJS_LEVEL = ${this.options.badjsLevel || 2};
 
 var report = function(data){
   setTimeout(function(){
-    window.BJ_REPORT&&window.BJ_REPORT.report(data)
+    window.BJ_REPORT&&window.BJ_REPORT.report(data);
   },2000);
 }
 `;
@@ -98,10 +98,7 @@ function getRetryUrl(src){
     retryPublicPath += '/';
     retryPublicPath = retryPublicPath.replace(/\\/\\/$/, '/');
   }
-  const value = src
-      .replace(/^https?:/, '')
-      .replace(publicPath.replace(/^https?:/, ''), '')
-      .replace(/^\\//, '');
+  var value = src.replace(/^https?:/, '').replace(publicPath.replace(/^https?:/, ''), '').replace(/^\\//, '');
   return retryPublicPath + value;
 }
 `;
@@ -109,9 +106,9 @@ function getRetryUrl(src){
 
   genRetryCode(jsComplete = '') {
     return `
-  var isRetry = this.hasAttribute('retry');
+  var isRetry = this.getAttribute('retry')!==null;
   // 只有异步的js走这个重试逻辑，同步的都是采用document.write
-  var isAsync = this.hasAttribute('isAsync');
+  var isAsync = this.getAttribute('isAsync')!==null;
   var isStyle = this.tagName==='LINK';
   var isError = event.type==='error'||event.type==='timeout';
   var src = this.href||this.src;
