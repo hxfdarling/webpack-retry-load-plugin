@@ -275,6 +275,7 @@ ${this.genRetryCode()}
           const filename = path.basename(url);
           if (this.matchObject(url)) {
             const script = `\\x3Cscript type="text/javascript" ${attrs
+              .filter(({ name }) => name !== 'crossOrigin')
               .map(i => `${i.name}="${i.value}"`)
               .join(' ')} retry>\\x3C/script>`;
             code = `<script>if(!__JS_RETRY__["${filename}"]){document.write('${script}');}</script>`;
