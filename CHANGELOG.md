@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.4"></a>
+
+## [1.1.4](https://github.com/hxfdarling/webpack-retry-load-plugin/compare/v1.1.3...v1.1.4) (2019-01-14)
+
+### Bug Fixes
+
+- 修复非外链 script 添加重试问题 ([a7b0e7c](https://github.com/hxfdarling/webpack-retry-load-plugin/commit/a7b0e7c))
+
 <a name="1.1.3"></a>
 
 ## [1.1.3](https://github.com/hxfdarling/webpack-retry-load-plugin/compare/v1.1.2...v1.1.3) (2019-01-14)
