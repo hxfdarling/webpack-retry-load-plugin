@@ -247,10 +247,12 @@ ${this.genRetryCode()}
         tag.attributes.onerror = code;
         tag.attributes.onload = code;
       });
-      assetTags.scripts.map(tag => {
-        tag.attributes.onerror = code;
-        tag.attributes.onload = code;
-      });
+      assetTags.scripts
+        .filter(tag => tag.src)
+        .map(tag => {
+          tag.attributes.onerror = code;
+          tag.attributes.onload = code;
+        });
     });
     hooks.beforeEmit.tapAsync(pluginName, async (pluginArgs, callback) => {
       let { html } = pluginArgs;
