@@ -33,7 +33,7 @@ class MainTemplatePlugin {
       source,
       `// ${pluginName} css retry`,
       'var toString = Object.prototype.toString;',
-      'var cssChunksPromise=installedCssChunks&&installedCssChunks[chunkId]',
+      'var cssChunksPromise=typeof installedCssChunks!=="undefined"&&installedCssChunks[chunkId]',
       "if(toString.call(cssChunksPromise) ==='[object Promise]'&&cssChunks[chunkId]===1 ){",
       Template.indent([
         'cssChunks[chunkId]=2;// 标记已经catch过',
