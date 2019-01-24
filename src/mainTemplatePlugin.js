@@ -13,9 +13,16 @@ class MainTemplatePlugin {
       `// ${pluginName} inject retry load js resource`,
       "script.setAttribute('isAsync','')",
       'var retryJS = function(event){',
-      Template.indent(['clearTimeout(timeout);', this.retryPlugin.genRetryCode('onScriptComplete(event);'), '}']),
+      Template.indent([
+        'clearTimeout(timeout);',
+        this.retryPlugin.genRetryCode('onScriptComplete(event);'),
+        '}',
+      ]),
       'script.onload = function(event){',
-      Template.indent(['onScriptComplete(event);', 'retryJS.call(this,event);']),
+      Template.indent([
+        'onScriptComplete(event);',
+        'retryJS.call(this,event);',
+      ]),
       '}',
       'script.onerror = retryJS;',
     ]);
@@ -26,7 +33,7 @@ class MainTemplatePlugin {
       source,
       `// ${pluginName} css retry`,
       'var toString = Object.prototype.toString;',
-      'var cssChunksPromise=installedCssChunks[chunkId]',
+      'var cssChunksPromise=installedCssChunks&&installedCssChunks[chunkId]',
       "if(toString.call(cssChunksPromise) ==='[object Promise]'&&cssChunks[chunkId]===1 ){",
       Template.indent([
         'cssChunks[chunkId]=2;// 标记已经catch过',
