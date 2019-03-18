@@ -22,6 +22,11 @@
     "@babel/preset-env": "^7.1.6",
     "fastparse": "^1.1.2"
   },
+  "peerDependencies": {
+    "webpack-sources": "*",
+    "webpack": "*",
+    "html-webpack-plugin": "*"
+  },
   "devDependencies": {
     "commitlint-config-imt": "0.0.4",
     "eslint-config-zman": "^0.0.9",

@@ -206,10 +206,12 @@ function getRetryUrl(src){
     let code = `
 var ${varName}={};
 function __retryPlugin(event){
+try{// 修复部分浏览器this.tagName获取失败的问题
 this.onload=this.onerror = null;
 ${this.genBadJsCode()}
 ${this.genGetRetryUrlCode()}
 ${this.genRetryCode()}
+}catch(e){}
 }`;
     code = await babel(code, this.options);
     return `<script>${code}</script>`;
